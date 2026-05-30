@@ -37,12 +37,15 @@
 //
 
 // SUA SOLUÇÃO:
+function calcularXp(resolvido, nivel) {
+    return resolvido * nivel * 15;
+}
 
 
 // Para testar descomente as pŕoximas 3 linhas
-// console.log('---------- Desafio 01 ----------')
-// console.log(calcularXp(4, 2));   // 120
-// console.log(calcularXp(10, 3));  // 450
+ console.log('---------- Desafio 01 ----------')
+ console.log(calcularXp(4, 2));    120
+ console.log(calcularXp(10, 3));   450
 
 
 // ------------------------------------------------------------
@@ -56,11 +59,11 @@
 // Ela recebe um número e devolve a string formatada.
 
 // SUA SOLUÇÃO:
-
+const formatarXp = (xp) => `${xp} XP`;
 // Para testar descomente as pŕoximas 3 linhas
-// console.log('---------- Desafio 02 ----------')
-// console.log(formatarXp(450));  // "450 XP"
-// console.log(formatarXp(0));    // "0 XP"
+console.log('---------- Desafio 02 ----------')
+console.log(formatarXp(450));  "450 XP"
+console.log(formatarXp(0));    "0 XP"
 
 
 
@@ -79,13 +82,19 @@
 // que acerta a faixa (assim você não precisa de "else").
 
 // SUA SOLUÇÃO:
+function definirFaixa(xp) {
+    if (xp >= 1000) return 'preta';
+    if (xp >= 500) return 'roxa';
+    if (xp >= 200) return 'azul';
+    return 'branca';
+}   
 
 // Para testar descomente as pŕoximas 5 linhas
-// console.log('---------- Desafio 03 ----------')
-// console.log(definirFaixa(1200));  // "preta"
-// console.log(definirFaixa(700));   // "roxa"
-// console.log(definirFaixa(300));   // "azul"
-// console.log(definirFaixa(50));    // "branca"
+console.log('---------- Desafio 03 ----------')
+console.log(definirFaixa(1200));  // "preta"
+console.log(definirFaixa(700));   // "roxa"
+console.log(definirFaixa(300));   // "azul"
+console.log(definirFaixa(50));    // "branca"
 
 // ------------------------------------------------------------
 // DESAFIO 4 — O perfil do aluno
@@ -99,11 +108,16 @@
 //          "Faixa <faixa> — <xp> XP"
 
 // SUA SOLUÇÃO:
+function perfilDoAluno(desafio, dificuldade) {
+    const xp = calcularXp(desafio, dificuldade);
+    const faixa = definirFaixa(xp);
+    return `Faixa ${faixa} — ${formatarXp(xp)}`;
+}
 
 // Para testar descomente as pŕoximas 3 linhas
-// console.log('---------- Desafio 04 ----------')
-// console.log(perfilDoNinja(10, 3));  // "Faixa azul — 450 XP"
-// console.log(perfilDoNinja(20, 4));  // "Faixa preta — 1200 XP"
+console.log('---------- Desafio 04 ----------')
+console.log(perfilDoAluno(10, 3));  "Faixa azul — 450 XP"
+console.log(perfilDoAluno(20, 4));  "Faixa preta — 1200 XP"
 
 
 // ------------------------------------------------------------
@@ -127,13 +141,20 @@ const turma = [
 ];
 
 // SUA SOLUÇÃO:
+function aplicarEmTodos(alunos, callback) {
+    const resultados = [];
+    for (const aluno of alunos) {
+        resultados.push(callback(aluno));
+    }
+    return resultados;
+}   
 
 // Para testar descomente as pŕoximas 5 linhas
-// console.log('---------- Desafio 05 ----------')
-// console.log(aplicarEmTodos(turma, n => calcularXp(n.desafios, n.dificuldade))); 
-// // [ 450, 120, 1200 ]
-// console.log(aplicarEmTodos(turma, n => n.nome));
-// // [ 'Aiko', 'Bento', 'Caio' ]
+console.log('---------- Desafio 05 ----------')
+console.log(aplicarEmTodos(turma, n => calcularXp(n.desafios, n.dificuldade))); 
+[ 450, 120, 1200 ]
+console.log(aplicarEmTodos(turma, n => n.nome));
+[ 'Aiko', 'Bento', 'Caio' ]
 
 
 // ------------------------------------------------------------
@@ -150,13 +171,22 @@ const turma = [
 // Desafio 1 pra manter só quem tem 500 XP ou mais.
 
 // SUA SOLUÇÃO:
+function filtrarAlunos(alunos, callback) {
+    const filtrados = [];
+    for (const aluno of alunos) {
+        if (callback(aluno)) {
+            filtrados.push(aluno);
+        }
+    }
+    return filtrados;
+}   
 
 
 // Para testar descomente as pŕoximas 4 linhas
-// console.log('---------- Desafio 06 ----------')
-// const fortes = filtrarAlunos(turma, n => calcularXp(n.desafios, n.dificuldade) >= 500);
-// console.log(fortes.length);                 // 1
-// console.log(fortes.map(n => n.nome));       // [ 'Caio' ]
+console.log('---------- Desafio 06 ----------')
+const fortes = filtrarAlunos(turma, n => calcularXp(n.desafios, n.dificuldade) >= 500);
+console.log(fortes.length);                  1
+console.log(fortes.map(n => n.nome));        [ 'Caio' ]
 
 
 // ------------------------------------------------------------
@@ -174,24 +204,33 @@ const turma = [
 // Essa ideia de "sucesso e falha como callbacks" é exatamente o
 // que você vai reencontrar nas Promises mais pra frente. 😉
 
-// SUA SOLUÇÃO:
+// SUA SOLUÇÃO:function tentarsubirDefaixa(xp, callbackSucesso, callbackFalha) {
+function tentarSubirDeFaixa(xp, callbackSucesso, callbackFalha) {
+    if (xp >= 500) {
+        const faixa = definirFaixa(xp);
+        callbackSucesso(faixa);
+    } else {
+        const falta = 500 - xp;
+        callbackFalha(falta);
+    }
+}   
 
 
 // Para testar descomente as pŕoximas 14 linhas
-// console.log('---------- Desafio 07 ----------')
-// tentarSubirDeFaixa(
-//   700,
-//   faixa => console.log('Parabéns! Agora você é faixa ' + faixa),
-//   falta => console.log('Faltam ' + falta + ' XP')
-// );
-// // "Parabéns! Agora você é faixa roxa"
-//
-// tentarSubirDeFaixa(
-//   450,
-//   faixa => console.log('Parabéns! Agora você é faixa ' + faixa),
-//   falta => console.log('Faltam ' + falta + ' XP')
-// );
-// // "Faltam 50 XP"
+console.log('---------- Desafio 07 ----------')
+tentarSubirDeFaixa(
+700,
+faixa => console.log('Parabéns! Agora você é faixa ' + faixa),
+falta => console.log('Faltam ' + falta + ' XP')
+);
+"Parabéns! Agora você é faixa roxa"
+
+tentarSubirDeFaixa(
+450,
+faixa => console.log('Parabéns! Agora você é faixa ' + faixa),
+falta => console.log('Faltam ' + falta + ' XP')
+ );
+ "Faltam 50 XP"
 
 
 // ------------------------------------------------------------
@@ -209,12 +248,19 @@ const turma = [
 // qual é o nível em que não há mais nada pra somar?
 
 // SUA SOLUÇÃO:
+function xpTotalDaJornada(nivel) {
+    if (nivel === 1) {
+        return 100;
+    } else {
+        return (nivel * 100) + xpTotalDaJornada(nivel - 1);
+    }
+}   
 
 
 // Para testar descomente as pŕoximas 3 linhas
-// console.log('---------- Desafio 08 ----------')
-// console.log(xpTotalDaJornada(3));  // 600
-// console.log(xpTotalDaJornada(5));  // 1500
+console.log('---------- Desafio 08 ----------')
+console.log(xpTotalDaJornada(3));  // 600
+console.log(xpTotalDaJornada(5));  // 1500
 
 
 // ------------------------------------------------------------
@@ -229,14 +275,19 @@ const turma = [
 // função. Essa função recebe um xp e devolve xp × fator.
 
 // SUA SOLUÇÃO:
+function criarMultiplicadorDeEvento(fator) {
+    return function(xp) {
+        return xp * fator;
+    }
+}   
 
 
 // Para testar descomente as pŕoximas 5 linhas
-// console.log('---------- Desafio 09 ----------')
-// const dobro  = criarMultiplicadorDeEvento(2);
-// const triplo = criarMultiplicadorDeEvento(3);
-// console.log(dobro(450));   // 900
-// console.log(triplo(450));  // 1350
+console.log('---------- Desafio 09 ----------')
+const dobro  = criarMultiplicadorDeEvento(2);
+const triplo = criarMultiplicadorDeEvento(3);
+console.log(dobro(450));   // 900
+console.log(triplo(450));  // 1350
 
 
 // ------------------------------------------------------------
@@ -265,17 +316,34 @@ const turma = [
 //
 
 // SUA SOLUÇÃO:
+function processarSemanaDoDojo(alunos, multiplicador) {
+    const relatorio = aplicarEmTodos(alunos, aluno => {
+        const xpBase = calcularXp(aluno.desafios, aluno.dificuldade);
+        const xpFinal = multiplicador(xpBase);
+        const faixa = definirFaixa(xpFinal);
+        return {
+            nome: aluno.nome,
+            xp: xpFinal,
+            faixa: faixa,
+            resumo: `${aluno.nome}: Faixa ${faixa} — ${formatarXp(xpFinal)}`
+        };
+    });
+
+    const totalFaixaPreta = filtrarAlunos(relatorio, r => r.faixa === 'preta').length;
+
+    return { relatorio, totalFaixaPreta };
+}       
 
 
 // Para testar descomente as pŕoximas 11 linhas
-// console.log('---------- Desafio 10 ----------')
-// const eventoFimDeSemana = criarMultiplicadorDeEvento(2);
-// const resultado = processarSemanaDoDojo(turma, eventoFimDeSemana);
-//
-// resultado.relatorio.forEach(r => console.log(r.resumo));
-// // Aiko: Faixa roxa — 900 XP
-// // Bento: Faixa azul — 240 XP
-// // Caio: Faixa preta — 2400 XP
-//
-// console.log('Subiram pra preta:', resultado.totalFaixaPreta);
-// // Subiram pra preta: 1
+console.log('---------- Desafio 10 ----------')
+const eventoFimDeSemana = criarMultiplicadorDeEvento(2);
+const resultado = processarSemanaDoDojo(turma, eventoFimDeSemana);
+
+resultado.relatorio.forEach(r => console.log(r.resumo));
+Aiko: Faixa roxa — 900 XP
+Bento: Faixa azul — 240 XP
+Caio: Faixa preta — 2400 XP
+
+console.log('Subiram pra preta:', resultado.totalFaixaPreta);
+Subiram pra preta: 1
