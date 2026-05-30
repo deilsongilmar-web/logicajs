@@ -1,2 +1,1 @@
 # logicajs
-aprendendo lógica js
